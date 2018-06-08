@@ -24,7 +24,7 @@ The goal is to provide a simple way to search into this data base using custom f
   <p>
     - app => script used to connect elasticsearch, this script is inclued in every pages through the header.php file.<br>
     - composants => contains the header and footer files.<br>
-    - docs => contains various docs about logstash, data structure, etc.There are user and admin docs written in fench.<br>
+    - docs => contains various docs about logstash, data structure, etc.There are user and technical docs written in fench.<br>
     - image => contains the flaticon.<br>
     - css => contains the <a href="https://getbootstrap.com">Bootstrap</a> files and the custom one (main.css).<br>
     - js => contains the <a href="https://getbootstrap.com">Bootstrap</a> files, the <a href="https://jquery.com">jquery</a> file and a custom file (functions.js).<br>
