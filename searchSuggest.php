@@ -26,6 +26,7 @@
         //(https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters-completion.html)
         for($i=0;$i<count($query['suggest']['b-suggest'][0]['options']);$i++){
             $chaine = $query['suggest']['b-suggest'][0]['options'][$i]['text'];
+                //on affiche chaque ligne pour qu'elle soit récupérée par jquery
                 echo ' <li class="list-group-item"><div class="cutText">',$chaine,'</div></li>';
         }
     }

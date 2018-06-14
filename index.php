@@ -12,6 +12,7 @@
         'Exploitant agricole',
         'Autre entreprenneur individuel'
     );
+    //tableau utilisé pour mettre en forme la requète de recherche spécifique
     $champTab=array(
         '"NOMEN_LONG" : ',
         '"SIGLE" : ',
@@ -26,7 +27,7 @@
         
     );
    
-    $test=array();
+    $tabRequest=array();
     //évite les recherches vides duent à une suppression de texte dans un input
     $champPlein=false;
     for($i=0;$i<10;$i++){
@@ -34,26 +35,29 @@
             $champPlein=true;
         }
     }
+
     if($champPlein)
     {
+        //permet d'associer chaque champ à sa donnée ex : "NOMEN_LONG":"le_nom_saisi"
         for($i=0;$i<10;$i++){
             if($_GET[''.$i]!=""){
-                array_push($test,''.$champTab[$i].'"'.$_GET[''.$i].'"');
+                array_push($tabRequest,''.$champTab[$i].'"'.$_GET[''.$i].'"');
             }
         }
+        //permet d'envoyer les données à Elasticsearch en bouclant sur celles-ci
         $json='{
             "query" : {
                 "bool" :{
                     "must": 
                         [';
-                            for($i=0;$i<count($test);$i++){
-                                if($i!=count($test)-1){
+                            for($i=0;$i<count($tabRequest);$i++){
+                                if($i!=count($tabRequest)-1){
                                     $json = $json.'
-                                    {"match" : {'. $test[$i].'}},';
+                                    {"match" : {'. $tabRequest[$i].'}},';
                                 }
                                 else{
                                     $json = $json.'
-                                    {"match" : {'.$test[$i].'}}';
+                                    {"match" : {'.$tabRequest[$i].'}}';
                                 }
                             }
                             $json=$json.'
@@ -64,13 +68,12 @@
         $params=[
             'body'=>$json
         ];
-        $pays = $_GET['0'];
-                    $cat=$_GET['1'];
-                    $query = $client->search($params);
+        $query = $client->search($params);
         
-       if($query['hits']['total']>=1){
-           $results=$query['hits']['hits'];
-       } 
+        //controle si la requête est vide et reformate le tableau de sortie
+        if($query['hits']['total']>=1){
+            $results=$query['hits']['hits'];
+        } 
     }
     else{
         if(isset($_GET['search'])){
@@ -104,6 +107,7 @@
 	<body>
         <h1>Recherche dans la base sirene</h1>
         <br><br>
+        <!-- Formulaire de recherche générale -->
         <form action="index.php" method="get" autocomplete="off" class="monForm">
             <div class="input-group mb-3">
                 <input type="text" name="search" class="form-control" placeholder="Recherche générale" aria-label="Recipient's username" aria-describedby="basic-addon2">
@@ -112,11 +116,12 @@
                 </div>
             </div>
         </form>
-       
+        <!-- Boutons pour afficher/masquer la recherche spécifique -->
         <button type="button" class="btn btn-info" id="clickme2">Utiliser la recherche spécifique ↓</button>
         <button type="button" class="btn btn-info" id="clickme3">Masquer la recherche spécifique ↑</button>
         <div id="leForm" class="fromSpec">
             <br>
+            <!-- Formulaire de recherche spécifique -->
             <form action="index.php" id="searchSpec" method="get" autocomplete="off" class="monForm">
                 <div class="container-fluid">
                     <div class='row'>
@@ -124,6 +129,7 @@
                             Nom entreprise
                             <br>
                             <input class="autoSuggest" type="text" name="0" id="0">
+                            <!-- Affichage des résultats de la recherche prédictive -->
                             <div class="dropdown">
                                 <ul class="list-group" id="mesResult">
                                 </ul>
@@ -206,6 +212,7 @@
                 
         ?>
         <br><br>
+        <!-- Affichage des résultats sur 2 lignes de 5 cases maximum -->
         <div class="container-fluid" id="results">
             <?php
                 if(count($results)>5){

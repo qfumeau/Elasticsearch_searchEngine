@@ -360,6 +360,7 @@
         }
         else{
     ?>
+    <!-- Body affiché sur l'id passé en get n'existe pas -->
     <body>
         <h2>Erreur : </h2>
         <h2>L'id n'existe pas</h2>
